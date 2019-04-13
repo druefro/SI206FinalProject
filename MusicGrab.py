@@ -28,37 +28,47 @@ def generate_token():
 # Set up library to grab stuff from twitter with your authentication, and
 # return it in a JSON-formatted way
 
-# token = generate_token()
-# spotify = spotipy.Spotify(auth = token)
-# spotify_results = spotify.user_playlist_tracks(user="spotifycharts", playlist_id="37i9dQZEVXbLRQDuF5jeBp") #large anount of data from top 50 list
+date = str(datetime.datetime.now()).split()[0]
+
+token = generate_token()
+spotify = spotipy.Spotify(auth = token)
+spotify_results = spotify.user_playlist_tracks(user="spotifycharts", playlist_id="37i9dQZEVXbLRQDuF5jeBp") #large anount of data from top 50 list
 # print(spotify_results['items'][0])
 
-url = 'https://www.billboard.com/charts/hot-100'
-r = requests.get(url)
-soup = BeautifulSoup(r.text, 'html.parser')
+# url = 'https://www.billboard.com/charts/hot-100'
+# r = requests.get(url)
+# soup = BeautifulSoup(r.text, 'html.parser')
 
-outer_tag = soup.find("div", class_ = "chart-details ")
-song_tag_list = outer_tag.find_all("div", class_ = "chart-list-item")
-song_list = []
-for song in song_tag_list:
-    song_list.append(song["data-title"])
-print(song_list)
+# outer_tag = soup.find("div", class_ = "chart-details ")
+# song_tag_list = outer_tag.find_all("div", class_ = "chart-list-item")
+# song_list = []
+# for song in song_tag_list:
+#     song_list.append(song["data-title"])
 
 
 conn = sqlite3.connect("spotify.sqlite")
 cur = conn.cursor()
 
-cur.execute("CREATE TABLE IF NOT EXISTS SpotifyData (rating_spotify INTEGER, song_title TEXT, date TEXT")
-''' Using track_number (rating), name, create a date column of table that just has the day we collected it on,
-make separate columns for : rating_spotify, rating_itunes, date, song, rating_score'''
+# cur.execute("CREATE TABLE IF NOT EXISTS SpotifyOverTimeData (song_title TEXT, 2019-04-13 INTEGER, 2019-04-14 INTEGER, 2019-04-15 INTEGER, 2019-04-16 INTEGER, 2019-04-17 INTEGER)")
+# ''' Using track_number (rating), name, create a date column of table that just has the day we collected it on,
+# make separate columns for : rating_spotify, rating_itunes, date, song, rating_score'''
 
-cur.execute("CREATE TABLE IF NOT EXISTS BillboardData (rating_billboard INTEGER, song TEXT")
+# cur.execute("CREATE TABLE IF NOT EXISTS BillboardData (rating_billboard INTEGER, song TEXT)")
 
-date = str(datetime.datetime.now()).split()[0]
-
-for song in song_list:
-    rating_billboard = song_list.index(song) + 1
-    sql = "INSERT INTO BillboardData (rating_billboard, song) VALUES (?,?)"
-    val = (rating_billboard, song) 
+cur.execute("CREATE TABLE IF NOT EXISTS TopSpotifyData (rating INTEGER, song_title TEXT)")
+for song in spotify_results:
+    song_title = song["track"]["name"]
+    rating = spotify_results.index(song) + 1
+    sql = "INSERT INTO TopSpotifyData (rating, song_title) VALUES (?,?)"
+    val = (rating, song_title)
     cur.execute(sql, val)
 conn.commit()
+
+
+
+# for song in song_list:
+#     rating_billboard = song_list.index(song) + 1
+#     sql = "INSERT INTO BillboardData (rating_billboard, song) VALUES (?,?)"
+#     val = (rating_billboard, song) 
+#     cur.execute(sql, val)
+# conn.commit()
