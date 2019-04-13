@@ -23,5 +23,3 @@ token = generate_token()
 spotify = spotipy.Spotify(auth = token)
 results = spotify.user_playlist_tracks(user="spotifycharts", playlist_id="37i9dQZEVXbLRQDuF5jeBp") #large anount of data from top 50 list
 print(results['items'][0])
-    
-conn = sqlite3
