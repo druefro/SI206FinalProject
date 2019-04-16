@@ -49,16 +49,16 @@ spotify_results = spotify.user_playlist_tracks(user="spotifycharts", playlist_id
 conn = sqlite3.connect("spotify.sqlite")
 cur = conn.cursor()
 
-# cur.execute("CREATE TABLE IF NOT EXISTS SpotifyOverTimeData (song_title TEXT, 2019-04-13 INTEGER, 2019-04-14 INTEGER, 2019-04-15 INTEGER, 2019-04-16 INTEGER, 2019-04-17 INTEGER)")
+cur.execute("CREATE TABLE IF NOT EXISTS SpotifySongData (song_title TEXT, rating INTEGER, date STRING)")
 # ''' Using track_number (rating), name, create a date column of table that just has the day we collected it on,
 # make separate columns for : rating_spotify, rating_itunes, date, song, rating_score'''
 
 # cur.execute("CREATE TABLE IF NOT EXISTS BillboardData (rating_billboard INTEGER, song TEXT)")
 
 cur.execute("CREATE TABLE IF NOT EXISTS TopSpotifyData (rating INTEGER, song_title TEXT)")
-for song in spotify_results:
+for song in spotify_results["items"]:
     song_title = song["track"]["name"]
-    rating = spotify_results.index(song) + 1
+    rating = spotify_results["items"].index(song) + 1
     sql = "INSERT INTO TopSpotifyData (rating, song_title) VALUES (?,?)"
     val = (rating, song_title)
     cur.execute(sql, val)
