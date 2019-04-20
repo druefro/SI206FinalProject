@@ -49,7 +49,7 @@ date = str(datetime.datetime.now()).split()[0]
 spotify_results = grab_spotify_data()
 
 
-# song_list = grab_billboard_data()
+song_list = grab_billboard_data()
 
 
 conn = sqlite3.connect("spotify.sqlite")
@@ -74,22 +74,22 @@ for song in spotify_results["items"]:
         count1 += 1
 conn.commit()
 
-# for song in spotify_results["items"]:
-#     song_title = song["track"]["name"]
-#     rating = spotify_results["items"].index(song) + 1
-#     sql = "INSERT OR IGNORE INTO TopSpotifyData (rating, song_title) VALUES (?,?)"
-#     val = (rating, song_title)
-#     cur.execute(sql, val)
-# conn.commit()
+for song in spotify_results["items"]:
+    song_title = song["track"]["name"]
+    rating = spotify_results["items"].index(song) + 1
+    sql = "INSERT OR IGNORE INTO TopSpotifyData (rating, song_title) VALUES (?,?)"
+    val = (rating, song_title)
+    cur.execute(sql, val)
+conn.commit()
 
-# count = 0
-# for song in song_list:
-#     if count == 20:
-#         break
-#     rating_billboard = song_list.index(song) + 1
-#     sql = "INSERT OR IGNORE INTO BillboardData (rating_billboard, song) VALUES (?,?)"
-#     val = (rating_billboard, song) 
-#     rows_modified = cur.execute(sql, val).rowcount
-#     if rows_modified != 0:
-#         count += 1
-# conn.commit()
+count = 0
+for song in song_list:
+    if count == 20:
+        break
+    rating_billboard = song_list.index(song) + 1
+    sql = "INSERT OR IGNORE INTO BillboardData (rating_billboard, song) VALUES (?,?)"
+    val = (rating_billboard, song) 
+    rows_modified = cur.execute(sql, val).rowcount
+    if rows_modified != 0:
+        count += 1
+conn.commit()
